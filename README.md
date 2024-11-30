@@ -44,7 +44,7 @@
 
 ### 安装步骤
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展
-2. 点击 [安装脚本](https://greasyfork.org/scripts/513528) 跳转至 Greasy Fork
+2. 点击 [安装脚本](https://greasyfork.org/zh-CN/scripts/519353-123%E4%BA%91%E7%9B%98%E8%A7%A3%E9%94%81) 跳转至 Greasy Fork
 3. 点击安装按钮完成安装
 
 ### 使用方法
@@ -119,6 +119,6 @@ A: 支持，可以选择多个文件后打包下载
     </a>
     &nbsp;
     <a href="https://greasyfork.org/scripts/513528">
-        <img src="https://img.shields.io/badge/GreasyFork-脚本安装-orange?style=for-the-badge&logo=tampermonkey" alt="GreasyFork">
+        <img src="https://greasyfork.org/zh-CN/scripts/519353-123%E4%BA%91%E7%9B%98%E8%A7%A3%E9%94%81" alt="GreasyFork">
     </a>
 </div>
