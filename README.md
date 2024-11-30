@@ -1,7 +1,7 @@
 # 123云盘解锁
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/QingJ01/123pan_unlock/refs/heads/main/icon.ico" width="128px" style="border-radius: 10px"/>
+    <img src="https://raw.gitmirror.com/QingJ01/123pan_unlock/refs/heads/main/icon.ico" width="128px" style="border-radius: 10px"/>
     <br>
     <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="version">
     <img src="https://img.shields.io/github/stars/QingJ01/123pan_unlock?style=flat-square" alt="stars">
@@ -36,7 +36,7 @@
 ## 🌈 界面预览
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/QingJ01/123pan_unlock/refs/heads/main/PanelView.png" width="350px" style="border-radius: 10px"/>
+    <img src="https://raw.gitmirror.com/QingJ01/123pan_unlock/refs/heads/main/PanelView.png" width="350px" style="border-radius: 10px"/>
     <p><i>设置面板界面 - 简洁而强大</i></p>
 </div>
 
