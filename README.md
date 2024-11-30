@@ -36,7 +36,7 @@
 ## 🌈 界面预览
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/QingJ01/123pan_unlock/refs/heads/main/PanelView.png" width="720px" style="border-radius: 10px"/>
+    <img src="https://raw.githubusercontent.com/QingJ01/123pan_unlock/refs/heads/main/PanelView.png" width="350px" style="border-radius: 10px"/>
     <p><i>设置面板界面 - 简洁而强大</i></p>
 </div>
 
