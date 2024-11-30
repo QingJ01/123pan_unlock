@@ -118,7 +118,7 @@ A: 支持，可以选择多个文件后打包下载
         <img src="https://img.shields.io/badge/GitHub-项目主页-brightgreen?style=for-the-badge&logo=github" alt="GitHub">
     </a>
     &nbsp;
-    <a href="https://greasyfork.org/scripts/513528">
-        <img src="https://greasyfork.org/zh-CN/scripts/519353-123%E4%BA%91%E7%9B%98%E8%A7%A3%E9%94%81" alt="GreasyFork">
-    </a>
+<a href="https://greasyfork.org/zh-CN/scripts/519353-123%E4%BA%91%E7%9B%98%E8%A7%A3%E9%94%81">
+<img src="https://img.shields.io/badge/GreasyFork-脚本安装-orange?style=for-the-badge&logo=tampermonkey" alt="GreasyFork">
+</a>
 </div>
