@@ -3,7 +3,7 @@
 <div align="center">
     <img src="https://raw.gitmirror.com/QingJ01/123pan_unlock/refs/heads/main/icon.ico" width="128px" style="border-radius: 10px"/>
     <br>
-    <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="version">
+    <img src="https://img.shields.io/badge/version-1.0.1-blue?style=flat-square" alt="version">
     <img src="https://img.shields.io/github/stars/QingJ01/123pan_unlock?style=flat-square" alt="stars">
     <img src="https://img.shields.io/github/forks/QingJ01/123pan_unlock?style=flat-square" alt="forks">
     <img src="https://img.shields.io/github/issues/QingJ01/123pan_unlock?style=flat-square" alt="issues">
