@@ -3,7 +3,7 @@
 <div align="center">
     <img src="https://raw.gitmirror.com/QingJ01/123pan_unlock/refs/heads/main/icon.ico" width="128px" style="border-radius: 10px"/>
     <br>
-    <img src="https://img.shields.io/badge/version-1.0.1-blue?style=flat-square" alt="version">
+    <img src="https://img.shields.io/badge/version-1.0.2-blue?style=flat-square" alt="version">
     <img src="https://img.shields.io/github/stars/QingJ01/123pan_unlock?style=flat-square" alt="stars">
     <img src="https://img.shields.io/github/forks/QingJ01/123pan_unlock?style=flat-square" alt="forks">
     <img src="https://img.shields.io/github/issues/QingJ01/123pan_unlock?style=flat-square" alt="issues">
@@ -77,7 +77,7 @@
   - 解除1GB下载上限
   - 支持个人网盘下载
   - 支持分享页面下载
-  - 支持批量打包下载
+  - 支持大空间告诉下载
 - 🎨 个性化设置
   - 精美设置面板
   - 自定义用户名称
@@ -96,7 +96,7 @@ A: 请尝试刷新页面或重新登录
 A: 请确保已正确开启会员模拟功能
 
 **Q: 支持批量下载吗？**  
-A: 支持，可以选择多个文件后打包下载
+A: 不支持，可以选择多个文件后单个下载
 
 ## 🤝 交流反馈
 
