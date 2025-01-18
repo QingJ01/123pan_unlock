@@ -21,13 +21,12 @@
 // @grant        GM_unregisterMenuCommand
 // @grant        GM_xmlhttpRequest
 // @run-at       document-start
-// @downloadURL https://update.greasyfork.org/scripts/519353/123%E4%BA%91%E7%9B%98%E8%A7%A3%E9%94%81.user.js
-// @updateURL https://update.greasyfork.org/scripts/519353/123%E4%BA%91%E7%9B%98%E8%A7%A3%E9%94%81.meta.js
+// @downloadURL none
 // ==/UserScript==
 
-(function () {
+(function() {
     'use strict';
-
+    
     // 从存储中读取配置,如果没有存储过则使用默认值
     var user = {
         vip: GM_getValue('vip', 1), // 开启会员修改（总开关）
@@ -49,100 +48,100 @@
 
     // 创建新的XMLHttpRequest类
     function CustomXHR() {
-        const xhr = new originalXHR();
-
-        // 保存原始方法的引用并绑定正确的this上下文
-        const originalOpen = xhr.open.bind(xhr);
-        const originalSetRequestHeader = xhr.setRequestHeader.bind(xhr);
-
-        // 重写open方法
-        xhr.open = function (method, url, ...args) {
+    const xhr = new originalXHR();
+    
+    // 保存原始方法的引用并绑定正确的this上下文
+    const originalOpen = xhr.open.bind(xhr);
+    const originalSetRequestHeader = xhr.setRequestHeader.bind(xhr);
+    
+    // 重写open方法
+    xhr.open = function(method, url, ...args) {
+        try {
+            url = new URL(url, location.origin).href;
+            xhr.url = url;
+            
+            // 检查是否需要拦截请求
+            if (url.includes('web_logs') || url.includes('metrics')) {
+                throw new Error('【123 云盘解锁】已屏蔽此数据收集器');
+            }
+            
+            return originalOpen(method, url, ...args);
+        } catch (e) {
+            console.error('XHR open error:', e);
+            throw e;
+        }
+    };
+    
+    // 重写setRequestHeader方法
+    xhr.setRequestHeader = function(header, value) {
+        try {
+            let info = reddem();
+            let headers = {
+                "user-agent": info.ua,
+                "platform": info.os.toLowerCase(),
+                "app-version": info.version,
+                "x-app-version": info.versionX
+            };
+            
+            if (header.toLowerCase() in headers) {
+                value = headers[header.toLowerCase()];
+            }
+            
+            return originalSetRequestHeader(header, value);
+        } catch (e) {
+            console.error('XHR setRequestHeader error:', e);
+            return originalSetRequestHeader(header, value);
+        }
+    };
+    
+    // 添加响应拦截
+    xhr.addEventListener('readystatechange', function() {
+        if (this.readyState === 4) {
             try {
-                url = new URL(url, location.origin).href;
-                xhr.url = url;
-
-                // 检查是否需要拦截请求
-                if (url.includes('web_logs') || url.includes('metrics')) {
-                    throw new Error('【123 云盘解锁】已屏蔽此数据收集器');
-                }
-
-                return originalOpen(method, url, ...args);
+                handleResponse(xhr);
             } catch (e) {
-                console.error('XHR open error:', e);
-                throw e;
+                console.error('XHR response handler error:', e);
             }
-        };
-
-        // 重写setRequestHeader方法
-        xhr.setRequestHeader = function (header, value) {
-            try {
-                let info = reddem();
-                let headers = {
-                    "user-agent": info.ua,
-                    "platform": info.os.toLowerCase(),
-                    "app-version": info.version,
-                    "x-app-version": info.versionX
-                };
-
-                if (header.toLowerCase() in headers) {
-                    value = headers[header.toLowerCase()];
-                }
-
-                return originalSetRequestHeader(header, value);
-            } catch (e) {
-                console.error('XHR setRequestHeader error:', e);
-                return originalSetRequestHeader(header, value);
-            }
-        };
-
-        // 添加响应拦截
-        xhr.addEventListener('readystatechange', function () {
-            if (this.readyState === 4) {
-                try {
-                    handleResponse(xhr);
-                } catch (e) {
-                    console.error('XHR response handler error:', e);
-                }
-            }
-        });
-
-        return xhr;
+        }
+    });
+    
+    return xhr;
     }
 
     // 处理响应数据
     function handleResponse(xhr) {
         if (!xhr.url) return;
-
+        
         let res;
         try {
             res = JSON.parse(xhr.responseText);
         } catch (e) {
             return;
         }
-
+        
         if (xhr.url.includes('api/user/info') && user.vip === 1) {
             modifyUserInfo(res);
-        } else if (xhr.url.includes('file/download_info') ||
-            xhr.url.includes('share/download_info') ||
-            xhr.url.includes('file/batch_download_info')) {
+        } else if (xhr.url.includes('file/download_info') || 
+                  xhr.url.includes('share/download_info') || 
+                  xhr.url.includes('file/batch_download_info')) {
             modifyDownloadInfo(res, xhr.url);
         }
-
+        
         // 更新响应
         if (res) {
             if (!xhr._responseModified) {
                 xhr._responseModified = true;
                 const responseText = JSON.stringify(res);
-
+                
                 const handler = {
-                    get: function (target, prop) {
+                    get: function(target, prop) {
                         if (prop === 'response' || prop === 'responseText') {
                             return responseText;
                         }
                         return target[prop];
                     }
                 };
-
+                
                 Object.defineProperties(xhr, {
                     'response': {
                         configurable: true,
@@ -162,11 +161,11 @@
     // 修改用户信息
     function modifyUserInfo(res) {
         if (!res.data) return;
-
+        
         res.data.Vip = true;
         res.data.VipLevel = user.svip ? 2 : 1;
         if (user.ad === 1) res.data.IsShowAdvertisement = false;
-
+        
         if (user.endtime) {
             let time = new Date(user.endtime * 1000);
             res.data.VipExpire = time.toLocaleString();
@@ -176,7 +175,7 @@
                 IsUse: time >= new Date()
             }];
         }
-
+        
         if (user.name) res.data.Nickname = user.name;
         if (user.photo) res.data.HeadImage = user.photo;
         if (user.mail) res.data.Mail = user.mail;
@@ -187,10 +186,10 @@
     // 修改下载信息
     function modifyDownloadInfo(res, url) {
         if (!res.data) return;
-
+        
         let downloadUrl = res.data.DownloadUrl || res.data.DownloadURL;
         if (!downloadUrl) return;
-
+        
         try {
             let originURL = new URL(downloadUrl);
             if (originURL.origin.includes("web-pro")) {
@@ -205,7 +204,7 @@
                 newURL.searchParams.set('is_s3', 0);
                 downloadUrl = decodeURIComponent(newURL.href);
             }
-
+            
             if (res.data.DownloadUrl) res.data.DownloadUrl = downloadUrl;
             if (res.data.DownloadURL) res.data.DownloadURL = downloadUrl;
         } catch (e) {
@@ -217,7 +216,7 @@
     unsafeWindow.XMLHttpRequest = CustomXHR;
 
     // 重写fetch
-    unsafeWindow.fetch = async function (url, options) {
+    unsafeWindow.fetch = async function(url, options) {
         if (url.includes('web_logs') || url.includes('metrics')) {
             throw new Error('【123 云盘解锁】已屏蔽此数据收集器');
         }
@@ -226,7 +225,7 @@
 
     // 重写atob
     const originalAtob = unsafeWindow.atob;
-    unsafeWindow.atob = function (str) {
+    unsafeWindow.atob = function(str) {
         try {
             return originalAtob(decodeURIComponent(str));
         } catch (e) {
@@ -581,45 +580,45 @@
 
         // 添加所有设置项
         const settings = [{
-            key: 'VIP状态',
-            value: user.vip,
-            comment: '会员修改总开关'
-        },
-        {
-            key: 'SVIP显示',
-            value: user.svip,
-            comment: '显示为超级会员'
-        },
-        {
-            key: '广告控制',
-            value: user.ad,
-            comment: '关闭广告'
-        },
-        {
-            key: '用户名',
-            value: user.name,
-            comment: '自定义用户名'
-        },
-        {
-            key: '头像',
-            value: user.photo,
-            comment: '自定义头像URL'
-        },
-        {
-            key: '等级',
-            value: user.level,
-            comment: '成长容量等级(最高128)'
-        },
-        {
-            key: '过期时间',
-            value: user.endtime,
-            comment: '会员过期时间'
-        },
-        {
-            key: '调试模式',
-            value: user.debug,
-            comment: '调试信息显示级别'
-        }
+                key: 'VIP状态',
+                value: user.vip,
+                comment: '会员修改总开关'
+            },
+            {
+                key: 'SVIP显示',
+                value: user.svip,
+                comment: '显示为超级会员'
+            },
+            {
+                key: '广告控制',
+                value: user.ad,
+                comment: '关闭广告'
+            },
+            {
+                key: '用户名',
+                value: user.name,
+                comment: '自定义用户名'
+            },
+            {
+                key: '头像',
+                value: user.photo,
+                comment: '自定义头像URL'
+            },
+            {
+                key: '等级',
+                value: user.level,
+                comment: '成长容量等级(最高128)'
+            },
+            {
+                key: '过期时间',
+                value: user.endtime,
+                comment: '会员过期时间'
+            },
+            {
+                key: '调试模式',
+                value: user.debug,
+                comment: '调试信息显示级别'
+            }
         ];
 
         settings.forEach(setting => {
@@ -678,47 +677,6 @@
         };
 
         panel.appendChild(groupButton);
-
-        // 添加广告链接
-        const adButton = document.createElement('a');
-        adButton.href = 'http://h.aae0.com';
-        adButton.target = '_blank';
-        adButton.style.cssText = `
-    display: block;
-    margin-top: 10px;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, #ff4081, #c51162);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(197, 17, 98, 0.3);
-`;
-
-        adButton.innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
-        </svg>
-        <span>权益网</span>
-    </div>
-`;
-
-        adButton.onmouseover = () => {
-            adButton.style.transform = 'translateY(-2px)';
-            adButton.style.boxShadow = '0 4px 12px rgba(197, 17, 98, 0.4)';
-        };
-
-        adButton.onmouseout = () => {
-            adButton.style.transform = 'translateY(0)';
-            adButton.style.boxShadow = '0 2px 6px rgba(197, 17, 98, 0.3)';
-        };
-
-        panel.appendChild(adButton);
 
         // 添加关闭按钮
         const closeButton = document.createElement('button');
