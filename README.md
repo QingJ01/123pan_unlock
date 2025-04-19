@@ -114,7 +114,7 @@ A: 不支持，可以选择多个文件后单个下载
 
 - [GitHub Issues](https://github.com/QingJ01/123pan_unlock/issues): 提交问题反馈
 - [QQ交流群](https://qm.qq.com/cgi-bin/qm/qr?k=7j_1SXC6SUlOKqHfqVk2YMPrWSdf5Js7&jump_from=webapi&authKey=ih1vlkxMeQc9CxE18GjR2WN0x85OQoP7jB78/3UzeJ4hvXw3+eSUNeRMjHjS24lT): 加入用户交流群
-- 公众号：极客氢云![公众号](https://img.picui.cn/free/2025/02/10/67a9e8fbe2385.png)
+- 公众号：极客氢云![公众号](https://jiashu.1win.eu.org/https://raw.githubusercontent.com/QingJ01/123pan_unlock/refs/heads/main/gongzhonghao.png)
 
 ## 📝 开源协议
 
