@@ -3,7 +3,7 @@
 <div align="center">
     <img src="https://raw.gitmirror.com/QingJ01/123pan_unlock/refs/heads/main/icon.ico" width="128px" style="border-radius: 10px"/>
     <br>
-    <img src="https://img.shields.io/badge/version-1.0.5-blue?style=flat-square" alt="version">
+    <img src="https://img.shields.io/badge/version-1.0.6-blue?style=flat-square" alt="version">
     <img src="https://img.shields.io/github/stars/QingJ01/123pan_unlock?style=flat-square" alt="stars">
     <img src="https://img.shields.io/github/forks/QingJ01/123pan_unlock?style=flat-square" alt="forks">
     <img src="https://img.shields.io/github/issues/QingJ01/123pan_unlock?style=flat-square" alt="issues">
@@ -57,6 +57,12 @@
    - 调整其他设置项
 
 ## 🔄 更新日志
+### v1.0.6 (2025-05-21)
+- 🔧 用户报告信息同步: 确保用户报告信息与脚本设置的保持一致
+- ⚡️ 增加“长期会员”选项 用户可设置为长期会员状态
+- 🐛 对下载链接的转换逻辑进行了细微调整 以提高兼容性和稳定性
+- 💻 更新了版本号
+
 ### v1.0.5 (2025-02-18)
 - ⚡️ 新适配123云盘新域名123912.com
 
