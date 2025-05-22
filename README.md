@@ -134,7 +134,7 @@ A: 不支持，可以选择多个文件后单个下载
 
 ## 🙏 鸣谢
 
-- 感谢 [hmjz100](https://github.com/hmjz100) 提供的部分代码和灵感
+- 感谢 [Bao-qing](https://github.com/Bao-qing/) 提供的初始方法
 - 感谢所有提供建议和反馈的用户
 
 ---
