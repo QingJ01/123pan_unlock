@@ -3,7 +3,7 @@
 <div align="center">
     <img src="https://raw.gitmirror.com/QingJ01/123pan_unlock/refs/heads/main/icon.ico" width="128px" style="border-radius: 10px"/>
     <br>
-    <img src="https://img.shields.io/badge/version-1.0.6-blue?style=flat-square" alt="version">
+    <img src="https://img.shields.io/badge/version-1.1.1-blue?style=flat-square" alt="version">
     <img src="https://img.shields.io/github/stars/QingJ01/123pan_unlock?style=flat-square" alt="stars">
     <img src="https://img.shields.io/github/forks/QingJ01/123pan_unlock?style=flat-square" alt="forks">
     <img src="https://img.shields.io/github/issues/QingJ01/123pan_unlock?style=flat-square" alt="issues">
@@ -57,7 +57,13 @@
    - 调整其他设置项
 
 ## 🔄 更新日志
-### v1.1.0 (2025-09-17)
+### v1.1.0 (2025-09-18)
+- 🔧 问题修复：修复了在某些情况下会员等级显示不正确的问题
+- ⚡️ 下载优化：统一了新旧版下载链接的重写逻辑，解决了部分文件在特定情况下无法下载的问题
+- ​🚀 核心重构：对脚本代码进行了大规模的重构，使其更加模块化和易于维护
+- 💻 增强了广告拦截功能，屏蔽了更多的统计和数据收集请求
+
+### v1.1.0 (2025-09-16)
 - 🔧 重置下载逻辑，适配新版123云盘分享页面
 - ⚡️ 优化代码结构，重写部分不合理的函数
 - ​🚀 更新了版本号为1.1.0
