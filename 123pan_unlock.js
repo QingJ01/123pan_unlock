@@ -165,7 +165,7 @@
                 if (res?.code === 5113 || res?.code === 5114 || res?.message?.includes("下载流量已超出")) {
                     return {
                         code: 400,
-                        message: "【123云盘解锁】今日下载流量已超出限制，已为您拦截支付窗口",
+                        message: "【123云盘解锁】本次下载出现问题，本脚本不支持多文件下载哦！",
                         data: null
                     };
                 }
@@ -875,4 +875,4 @@
     } else {
         waitForBody();
     }
-})();
+})()
