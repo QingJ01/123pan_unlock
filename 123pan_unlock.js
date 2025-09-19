@@ -53,168 +53,155 @@
     // 创建存储URL的符号
     const requestURL = Symbol('requestURL');
 
-    // 规则系统 - 基于第二个脚本的架构
-    const rules = [
-        {
-            // 用户信息
-            runat: "end",
-            match: (url) => url.pathname.includes('api/user/info'),
-            condition: () => user.vip === 1,
-            action: (res) => {
-                if (!res.data) return res;
 
-                res.data.Vip = true;
-                res.data.VipLevel = user.pvip ? 3 : (user.svip ? 2 : 1);
+const rules = [
+    {
+        // 用户信息
+        runat: "end",
+        match: (url) => url.pathname.includes('api/user/info'),
+        condition: () => user.vip === 1,
+        action: (res) => {
+            if (!res.data) return res;
 
-                if (user.ad === 1) res.data.IsShowAdvertisement = false;
+            res.data.Vip = true;
+            res.data.VipLevel = user.pvip ? 3 : (user.svip ? 2 : 1);
 
-                // 确保UserVipDetail存在
-                if (!res.data.UserVipDetail) {
-                    res.data.UserVipDetail = {};
-                }
-                res.data.UserVipDetail.VipCode = res.data.VipLevel;
+            if (user.ad === 1) res.data.IsShowAdvertisement = false;
 
-                if (user.pvip === 1) {
-                    // 长期会员
-                    res.data.VipExpire = "永久有效";
-                    res.data.UserVipDetail.UserPermanentVIPDetailInfos = [{
-                        VipDesc: "长期VIP会员",
-                        TimeDesc: " 永久有效",
-                        IsUse: true
-                    }];
-                    res.data.UserVipDetailInfos = [];
-                } else if (user.svip === 1) {
-                    // 超级会员
-                    let time = new Date(user.endtime * 1000);
-                    res.data.VipExpire = time.toLocaleString();
-                    res.data.UserVipDetailInfos = [{
-                        VipDesc: "SVIP 会员",
-                        TimeDesc: time.toLocaleDateString() + " 到期",
-                        IsUse: time >= new Date()
-                    }];
-                } else {
-                    // 普通会员
-                    let time = new Date(user.endtime * 1000);
-                    res.data.VipExpire = time.toLocaleString();
-                    res.data.UserVipDetailInfos = [{
-                        VipDesc: "VIP 会员",
-                        TimeDesc: time.toLocaleDateString() + " 到期",
-                        IsUse: time >= new Date()
-                    }];
-                }
-
-                if (user.name) res.data.Nickname = user.name;
-                if (user.photo) res.data.HeadImage = user.photo;
-                if (user.mail) res.data.Mail = user.mail;
-                if (user.phone) res.data.Passport = Number(user.phone);
-                if (user.id) res.data.UID = Number(user.id);
-                if (user.level) res.data.GrowSpaceAddCount = Number(user.level);
-
-                return res;
+            // 确保UserVipDetail存在
+            if (!res.data.UserVipDetail) {
+                res.data.UserVipDetail = {};
             }
-        },
-        {
-            // 用户报告信息
-            runat: "end",
-            match: (url) => url.pathname.includes('user/report/info'),
-            condition: () => user.vip === 1,
-            action: (res) => {
-                if (res && res.data) {
-                    res.data.vipType = user.pvip ? 3 : (user.svip ? 2 : 1);
-                    res.data.vipSub = user.pvip ? 3 : (user.svip ? 2 : 1);
-                    res.data.developSub = user.pvip ? 3 : (user.svip ? 2 : 1);
-                }
-                return res;
-            }
-        },
-        {
-            // 下载信息（头部修改，参考第二个脚本添加此规则以统一处理XHR和fetch的platform设置）
-            runat: "header",
-            match: (url) => [
-                'file/download_info',
-                'file/batch_download_info', 
-                'share/download/info',
-                'file/batch_download_share_info'
-            ].some(path => url.pathname.includes(path)),
-            condition: () => true,
-            action: (headers) => {
-                headers.platform = 'android'; // 参考第二个脚本，使用'android'（原脚本用'ios'，但第二个脚本证明'android'更可靠）
-                return headers;
-            }
-        },
-        {
-            // 下载信息（响应体修改，参考第二个脚本优化URL处理逻辑和错误拦截顺序）
-            runat: "end",
-            match: (url) => [
-                'file/download_info',
-                'file/batch_download_info', 
-                'share/download/info',
-                'file/batch_download_share_info'
-            ].some(path => url.pathname.includes(path)),
-            condition: () => true,
-            action: (res, url) => {
-                // 先处理下载URL（参考第二个脚本，确保在错误处理前执行，以覆盖可能的无效URL）
-                if (res.data && (res.data.DownloadUrl || res.data.DownloadURL)) {
-                    try {
-                        // 统一处理 DownloadUrl / DownloadURL
-                        let origKey = res.data.DownloadUrl ? 'DownloadUrl' : 'DownloadURL';
-                        let origURL = new URL(res.data[origKey]);
-                        let finalURL;
+            res.data.UserVipDetail.VipCode = res.data.VipLevel;
 
-                        if (origURL.origin.includes("web-pro")) {
-                            let params = ((url) => {
-                                try { return decodeURIComponent(atob(url)); } 
-                                catch { return atob(url); }
-                            })(origURL.searchParams.get('params'));
-                            
-                            let directURL = new URL(params, origURL.origin);
-                            directURL.searchParams.set('auto_redirect', 0);
-                            origURL.searchParams.set('params', btoa(directURL.href));
-                            finalURL = decodeURIComponent(origURL.href);
-                        } else {
-                            origURL.searchParams.set('auto_redirect', 0);
-                            let newURL = new URL('https://web-pro2.123952.com/download-v2/', origURL.origin); // 移除第二个脚本中的多余空格
-                            newURL.searchParams.set('params', btoa(encodeURI(origURL.href)));
-                            newURL.searchParams.set('is_s3', 0);
-                            finalURL = decodeURIComponent(newURL.href);
-                        }
-                        
-                        res.data[origKey] = finalURL;
-                    } catch (e) {
-                        if (user.debug) console.error('Download URL modification error:', e);
-                    }
-                }
-                
-                // 处理下载限制错误（参考第二个脚本，移到URL处理后执行，避免覆盖已修改的URL）
-                if (res?.code === 5113 || res?.code === 5114 || res?.message?.includes("下载流量已超出")) {
-                    if (url.pathname.includes("batch_download")) {
-                        return {
-                            code: 400,
-                            message: "【123云盘解锁】请勿多选文件！已为您拦截支付下载窗口",
-                            data: null
-                        };
-                    } else {
-                        return {
-                            code: 400,
-                            message: "【123云盘解锁】您今日下载流量已超出限制，已为您拦截支付窗口",
-                            data: null
-                        };
-                    }
-                }
-                
-                return res;
+            if (user.pvip === 1) {
+                // 长期会员
+                res.data.VipExpire = "永久有效";
+                res.data.UserVipDetail.UserPermanentVIPDetailInfos = [{
+                    VipDesc: "长期VIP会员",
+                    TimeDesc: " 永久有效",
+                    IsUse: true
+                }];
+                res.data.UserVipDetailInfos = [];
+            } else if (user.svip === 1) {
+                // 超级会员
+                let time = new Date(user.endtime * 1000);
+                res.data.VipExpire = time.toLocaleString();
+                res.data.UserVipDetailInfos = [{
+                    VipDesc: "SVIP 会员",
+                    TimeDesc: time.toLocaleDateString() + " 到期",
+                    IsUse: time >= new Date()
+                }];
+            } else {
+                // 普通会员
+                let time = new Date(user.endtime * 1000);
+                res.data.VipExpire = time.toLocaleString();
+                res.data.UserVipDetailInfos = [{
+                    VipDesc: "VIP 会员",
+                    TimeDesc: time.toLocaleDateString() + " 到期",
+                    IsUse: time >= new Date()
+                }];
             }
-        },
-        {
-            // 屏蔽数据收集请求
-            runat: "start",
-            match: (url) => url.pathname.includes('web_logs') || url.pathname.includes('metrics'),
-            condition: () => true,
-            action: () => {
-                throw new Error('【123云盘解锁】已屏蔽此数据收集器');
-            }
+
+            if (user.name) res.data.Nickname = user.name;
+            if (user.photo) res.data.HeadImage = user.photo;
+            if (user.mail) res.data.Mail = user.mail;
+            if (user.phone) res.data.Passport = Number(user.phone);
+            if (user.id) res.data.UID = Number(user.id);
+            if (user.level) res.data.GrowSpaceAddCount = Number(user.level);
+
+            return res;
         }
-    ];
+    },
+    {
+        // 用户报告信息
+        runat: "end",
+        match: (url) => url.pathname.includes('user/report/info'),
+        condition: () => user.vip === 1,
+        action: (res) => {
+            if (res && res.data) {
+                res.data.vipType = user.pvip ? 3 : (user.svip ? 2 : 1);
+                res.data.vipSub = user.pvip ? 3 : (user.svip ? 2 : 1);
+                res.data.developSub = user.pvip ? 3 : (user.svip ? 2 : 1);
+            }
+            return res;
+        }
+    },
+    {
+        runat: "header",
+        match: (url) => [
+            'file/download_info',
+            'file/batch_download_info', 
+            'share/download/info',
+            'file/batch_download_share_info'
+        ].some(path => url.pathname.includes(path)),
+        condition: () => true,
+        action: (headers) => {
+            headers.platform = 'android';
+            return headers;
+        }
+    },
+    {
+        runat: "end",
+        match: (url) => [
+            'file/download_info',
+            'file/batch_download_info', 
+            'share/download/info',
+            'file/batch_download_share_info'
+        ].some(path => url.pathname.includes(path)),
+        condition: () => true,
+        action: (res, url) => {
+            // 先处理下载限制错误（必须在URL处理前执行）
+            if (res?.code === 5113 || res?.code === 5114 || res?.message?.includes("下载流量已超出")) {
+                if (url.pathname.includes("batch_download")) {
+                    return {
+                        code: 400,
+                        message: "【123云盘解锁】请勿多选文件！已为您拦截支付下载窗口",
+                        data: null
+                    };
+                } else {
+                    return {
+                        code: 400,
+                        message: "【123云盘解锁】您今日下载流量已超出限制，已为您拦截支付窗口",
+                        data: null
+                    };
+                }
+            }
+            
+            if (res.data && (res.data.DownloadUrl || res.data.DownloadURL)) {
+                // 统一处理 DownloadUrl / DownloadURL
+                let origKey = res.data.DownloadUrl ? 'DownloadUrl' : 'DownloadURL';
+                let origURL = new URL(res.data[origKey]);
+                let finalURL;
+                if (origURL.origin.includes("web-pro")) {
+                    let params = ((url) => { try { return decodeURIComponent(atob(url)) } catch { return atob(url) } })(origURL.searchParams.get('params'));
+                    let directURL = new URL(params, origURL.origin);
+                    directURL.searchParams.set('auto_redirect', 0);
+                    origURL.searchParams.set('params', btoa(encodeURI(directURL.href)));
+                    finalURL = decodeURIComponent(origURL.href);
+                } else {
+                    origURL.searchParams.set('auto_redirect', 0);
+                    let newURL = new URL('https://web-pro2.123952.com/download-v2/ ', origURL.origin);
+                    newURL.searchParams.set('params', btoa(encodeURI(origURL.href)));
+                    newURL.searchParams.set('is_s3', 0);
+                    finalURL = decodeURIComponent(newURL.href);
+                }
+                res.data[origKey] = finalURL;
+            }
+            
+            return res;
+        }
+    },
+    {
+        // 屏蔽数据收集请求
+        runat: "start",
+        match: (url) => url.pathname.includes('web_logs') || url.pathname.includes('metrics'),
+        condition: () => true,
+        action: () => {
+            throw new Error('【123云盘解锁】已屏蔽此数据收集器');
+        }
+    }
+];
 
     // 创建新的XMLHttpRequest类
     function CustomXHR() {
