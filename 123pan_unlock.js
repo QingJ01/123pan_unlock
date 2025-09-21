@@ -50,7 +50,7 @@
     const originalFetch = unsafeWindow.fetch;
     const originalOpen = XMLHttpRequest.prototype.open;
     const originalSend = XMLHttpRequest.prototype.send;
-    const originalSetRequestHeader = XMLHttpRequest。prototype。setRequestHeader;
+    const originalSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
 
     // 创建唯一标识符
     const requestURLSymbol = Symbol('requestURL');
@@ -64,7 +64,7 @@
             match: (url) => url.pathname.includes('api/user/info'),
             condition: () => user.vip === 1,
             action: (res) => {
-                if (!res。data) return res;
+                if (!res.data) return res;
 
                 res.data.Vip = true;
                 res.data.VipLevel = user.pvip ? 3 : (user.svip ? 2 : 1);
@@ -254,9 +254,9 @@
             const headers = {};
             Object.entries(result).forEach(([key, value]) => {
                 const formattedKey = key.toLowerCase()
-                    。split('-')
-                    。map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                    。join('-');
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join('-');
                 headers[formattedKey] = value;
             });
             result = headers;
@@ -266,14 +266,14 @@
 
         // 非header返回字符串
         if (phase !== 'header' && result && typeof result === 'object') {
-            return JSON。stringify(result);
+            return JSON.stringify(result);
         }
 
         return result;
     }
 
     // 修复后的Fetch拦截
-    unsafeWindow。fetch = async function (input, init = {}) {
+    unsafeWindow.fetch = async function (input, init = {}) {
         const url = new URL(typeof input === 'string' ? input : input.url, location.origin);
 
         // 检查start规则
@@ -281,23 +281,23 @@
         if (startRule) {
             try {
                 const result = applyRule(startRule, null, url, 'fetch', 'start');
-                return new Response(result， {
-                    status: 200，
-                    statusText: 'OK'，
+                return new Response(result, {
+                    status: 200,
+                    statusText: 'OK',
                     headers: { 'Content-Type': 'application/json' }
                 });
             } catch (error) {
-                console。warn('[123云盘解锁] fetch start错误:', error);
+                console.warn('[123云盘解锁] fetch start错误:', error);
             }
         }
 
         // 检查header规则
-        const headerRule = findMatchingRule(url， 'header');
+        const headerRule = findMatchingRule(url, 'header');
         if (headerRule) {
             if (!init.headers) init.headers = {};
 
             let headers = {};
-            if (init。headers instanceof Headers) {
+            if (init.headers instanceof Headers) {
                 init.headers.forEach((value, key) => headers[key] = value);
             } else {
                 headers = { ...init.headers };
@@ -314,8 +314,8 @@
         const endRule = findMatchingRule(url, 'end');
         if (endRule) {
             try {
-                const responseText = await response。clone().text();
-                const modifiedResponse = applyRule(endRule， responseText, url, 'fetch', 'end');
+                const responseText = await response.clone().text();
+                const modifiedResponse = applyRule(endRule, responseText, url, 'fetch', 'end');
 
                 return new Response(modifiedResponse, {
                     status: response.status,
@@ -323,7 +323,7 @@
                     headers: response.headers
                 });
             } catch (error) {
-                console。warn('[123云盘解锁] fetch end错误:'， error);
+                console.warn('[123云盘解锁] fetch end错误:', error);
             }
         }
 
@@ -331,7 +331,7 @@
     };
 
     // 修复后的XMLHttpRequest拦截
-    XMLHttpRequest。prototype.open = function (method， url, ...args) {
+    XMLHttpRequest.prototype.open = function (method, url, ...args) {
         const fullUrl = new URL(url, location.origin);
         this[requestURLSymbol] = fullUrl;
 
@@ -596,14 +596,14 @@
                         GM_setValue('level', newValue);
                         break;
                     case '过期时间':
-                        user。endtime = newValue;
-                        GM_setValue('endtime'， newValue);
+                        user.endtime = newValue;
+                        GM_setValue('endtime', newValue);
                         break;
                 }
 
                 // 显示保存成功提示
-                saveButton。textContent = '已保存';
-                saveButton。classList。add('saved');
+                saveButton.textContent = '已保存';
+                saveButton.classList.add('saved');
                 setTimeout(() => {
                     saveButton.textContent = '保存';
                     saveButton.classList.remove('saved');
@@ -613,22 +613,22 @@
 
             inputContainer.appendChild(inputElement);
             inputContainer.appendChild(saveButton);
-            content。appendChild(inputContainer);
+            content.appendChild(inputContainer);
         } else {
             // 非编辑项的显示
-            const valueElement = document。createElement('div');
+            const valueElement = document.createElement('div');
             valueElement.className = 'setting-value';
             valueElement.textContent = key === '过期时间' ? new Date(value * 1000).toLocaleString() : value;
             content.appendChild(valueElement);
         }
 
-        item。appendChild(content);
+        item.appendChild(content);
 
         if (comment) {
             const commentElement = document.createElement('div');
             commentElement.className = 'setting-comment';
             commentElement.textContent = comment;
-            item。appendChild(commentElement);
+            item.appendChild(commentElement);
         }
 
         return item;
@@ -642,7 +642,7 @@
 
         // 创建面板容器
         const panel = document.createElement('div');
-        panel。id = 'vip-settings-panel';
+        panel.id = 'vip-settings-panel';
         panel.className = 'settings-panel';
 
         // 创建标题栏
@@ -650,7 +650,7 @@
         header.className = 'panel-header';
 
         // 创建标题容器
-        const titleContainer = document。createElement('div');
+        const titleContainer = document.createElement('div');
         titleContainer.className = 'title-container';
 
         const title = document.createElement('h3');
@@ -698,7 +698,7 @@
             { key: '调试模式', value: user.debug, comment: '调试信息显示级别' }
         ];
 
-        设置.forEach(setting => {
+        settings.forEach(setting => {
             settingsList.appendChild(formatSetting(setting.key, setting.value, setting.comment));
         });
 
@@ -717,7 +717,7 @@
         `;
         panel.appendChild(groupButton);
 
-        document。body.appendChild(panel);
+        document.body.appendChild(panel);
     }
 
     function addTriggerButton() {
@@ -729,14 +729,14 @@
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
         `;
-        trigger。addEventListener('click'， createSettingsPanel);
+        trigger.addEventListener('click', createSettingsPanel);
         document.body.appendChild(trigger);
     }
 
     // 添加样式 - 修复版本
     function addStyles() {
         // 先移除可能存在的旧样式
-        const existingStyle = document。getElementById('vip-settings-style');
+        const existingStyle = document.getElementById('vip-settings-style');
         if (existingStyle) {
             existingStyle.remove();
         }
@@ -1105,25 +1105,25 @@
                     }
                 }
         `;
-        document。head。appendChild(style);
+        document.head.appendChild(style);
     }
 
     // 注册菜单命令
-    GM_registerMenuCommand('⚙️ 打开设置面板'， createSettingsPanel);
+    GM_registerMenuCommand('⚙️ 打开设置面板', createSettingsPanel);
 
     // 等待页面加载完成
     function waitForBody() {
-        if (document。body) {
+        if (document.body) {
             addStyles(); // 先添加样式
             addTriggerButton(); // 再添加按钮
         } else {
-            setTimeout(waitForBody， 100);
+            setTimeout(waitForBody, 100);
         }
     }
 
     // 页面加载完成后初始化
-    if (document。readyState === 'loading') {
-        document。addEventListener('DOMContentLoaded'， waitForBody);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', waitForBody);
     } else {
         waitForBody();
     }
