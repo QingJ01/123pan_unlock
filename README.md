@@ -157,9 +157,9 @@ A: 不支持，可以选择多个文件后单个下载
 
 ## 🙏 鸣谢
 
-- 本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助
-- ![EdgeOne](https://edgeone.ai/media/34fe3a45-492d-4ea4-ae5d-ea1087ca7b4b.png)
-- [亚洲最佳CDN、边缘和安全解决方案 - Tencent EdgeOne](https://edgeone.ai/zh?from=github.com/QingJ01)
+- 感谢 [Bao-qing](https://github.com/Bao-qing/) 提供的初始方法
+- [123云盘青春版](https://github.com/hmjz100/123panYouthMember/)提供的新版解决方案
+- 感谢所有提供建议和反馈的用户
 ---
 
 <div align="center">
