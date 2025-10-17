@@ -216,7 +216,7 @@ A: 可能原因：
 - 感谢 [Baoqing](https://github.com/Bao-qing/)、[Chaofan2685](https://github.com/chaofan2685)、[lipkiat](https://github.com/lipkiat) - 提供123FastLink秒传功能核心代码
 - 感谢 [hmjz100](https://github.com/hmjz100/123panYouthMember/) - 提供新版解决方案和适配代码参考
 - 感谢所有提供建议和反馈的用户
-
+- Cluade大模型提供编码帮助
 ---
 
 <div align="center">
